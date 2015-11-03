@@ -1,0 +1,16 @@
+{
+    "manifest_version": 2,
+
+    "name": "Get Your Axiologue Score",
+    "description": "Gives personalized ethical rankings for athletc shoes.  Currently only works with Amazon and Zappos",
+    "version": "0.1",
+
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+
+    "permissions": [
+        "activeTab"
+    ]
+}
