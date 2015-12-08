@@ -1,41 +1,63 @@
-// HTML SNIPPETS
 
-var loginSnippet = 
-  '<h3>Login</h3>' +
-  '<div id="errorMessage">' +
-  '</div>' +
-  '<form id="loginForm">' +
-    '<label for="username">Username:</label>' +
-    '<input type="text" id="username" name="username" placeholder="username">' + 
-    '<label for="password">Password:</label>' +
-    '<input type="password" name="password" id="password" placeholder="password">' +
-    '<button name="Submit" value="Submit" type="submit">Submit</button>' +
-  '</form>';
-
-var companySnippet = 
+var productSnippet = 
   '<div id="product">' +
+    '<h1 class="center"></h1>' +
   '</div>' +
-  '<div id="score">' +
-   '<h3>Get Company Score</h3>' + 
-     '<form id="getCompanyForm">' + 
-      '<label for="company">Company:</label>' +
-      '<select id="company" name="company">' +
-        '<option value-"">------- Select Company --------</option>' +
-      '</select>' +
-      '<button type="submit" value="Submit" name="Submit">Get Company Score</button>' +
-     '</form>' +
-     '<hr>' +
-    '<div id="results">' +
+  '<hr >' +
+  '<div id="personalized"></div>' +
+  '<div id="scores">' +
+    '<div id="overall">' +
+    '</div>' +
+    '<div id="subscores">' +
      '<ul id="companyScores">' +
      '</ul>' +
     '</div>' +
   '</div>' +
-  '<button id="logout">Logout</button>';
+  '<hr>' +
+  '<div id="linkDiv">' +
+  '</div>';
 
-var wrongSiteHTML = '<p>Unfortunately, this extension currently only supports looking up shoes at Amazon.com and Zappos.com.  If you\'re looking for additional functionality, please <a href="MAILTO:info@axiologue.org">reach out</a> with your suggestions.</p>';
+var wrongSiteHTML = 
+  '<h1 class="center">Unsupported Site</h1>' +
+  '<hr >' +
+  '<p>Currently, <strong>Mindful Click</strong> only supports looking up athletic shoes at amazon.com and zappos.com.</p>' +
+  'If you have any questions or comments, we\'d love to hear from you.  You can send us your comments or suggestions at <a class="email" href="MAILTO:info@axiologue.org">info@axiologue.org</a>.</p>';
 
-var rightSiteHTML = "<p>This is amazon or zappos!</p>";
+var noProductSnippet = 
+  '<h1 class="center">No Product Found</h1>' +
+  '<hr >' +
+  '<p>You don\'t appear to be on a page with any product. If you think this is an error, you can drop us a line at <a class="email" href="MAILTO:info@axiologue.org">info@axiologue.org</a>. In the meantime, keeping on browsing!</p>';
 
+var productNotFoundSnippet =
+  '<h1 class="center">No Product Match</h1>' +
+  '<hr >' +
+  '<p>We couldn\'t find <span id="productName"></span> in our servers.  If the requested product is an athletic shoe and you think this is a mistake, send us an <a class="email" href="MAILTO:info@axiologue.org">email</a> or considering <a class="link" href="http://data.axiologue.org">adding it</a>.<p>';
+
+var categoryIcons = {
+  'Animal Welfare': 'paw',
+  'Consumer Health': 'ambulance',
+  'Corporate Finances': 'dollar',
+  'Environment': 'leaf',
+  'Labor': 'suitcase', 
+  'Public Engagement': 'bullhorn'
+};
+
+var explanationText = 
+  '<h1 class="center">What Your Score Means</h1>' +
+  '<hr>' +
+  '<div id="Explanation">' +
+    '<ul>' +
+      '<li>A <span class="positive"><strong>Positive</strong></span> score means in line with your ethics!</li>' +
+      '<li>A <span class="negative"><strong>Negative</strong></span> score means contrary to your ethics!</li>' +
+      '<li>A <span class="neutral"><strong>Zero</strong></span> score means no opinion!</li>' +
+    '</ul>' +
+    '<p>Your score is determined by matching your ethics with the data we have on each product.  Your ethical profile  was set by answering a set of questions at sign up, but you can adjust your ethical profile at any point <a class="link" href="http://data.axiologue.org/#/ethicsProfile">here</a>.</p>' +
+    '<p>If you want to see our raw data, you can check that out <a class="link" href="http://data.axiologue.org/#/articles/tagged">here</a> or learn how to <a class="link" href="http://data.axiologue.org/#/text/tagging">contribute</a> to help make Axiologue better!</p>' +
+  '</div>' +
+  '<hr >' +
+  '<div>' +
+    '<button id="backButton" class="btn btn-full btn-footer">Back To Product</button>' +
+  '</div>';
 
 // Login info
 
@@ -59,73 +81,19 @@ window.onload = function () {
   
 }
 
-// Switch To Login Page
-function loadLogin() {
-  // Load the login HTML
-  $('#content').html(loginSnippet);
-  
-  // Add the submit function
-  $('#loginForm').on('submit', function (e) {
-    var un = $('input[name="username"]').val();
-    var pass = $('input[name="password"]').val();
-
-    // Simple form validation
-    if (!un || !pass) {
-      // Check to see if an error message has already been given
-      if(errorMsg) {
-        $('#errorMessage').empty();
-      }
-      
-      errorMsg = "<h3>Please Enter Your Username and Password</h3>";
-      // Load existing error message
-      $('#errorMessage').append(errorMsg);
-      
-    } else {
-      // Login API call   
-      apiCall({
-        method: 'POST',
-        url: 'rest-auth/login/',
-        data: {
-          username: un,
-          password: pass
-        }
-      })
-      .done(function (data, textStatus, xhr) {
-        chrome.storage.local.set({'token':data.key});
-        token = data.key;
-        loadMain();
-      })
-      .fail(function (xhr, textStatus, error) {
-        // Clear any error message
-        if(errorMsg) {
-          $('#errorMessage').empty();
-        }
-
-        // Add new error message
-        errorMsg = "<h3>" + xhr.responseJSON + " </h3>";
-        $("#errorMessage").append(errorMsg);
-        
-      });
-    }
-    // Stop form submission
-    e.preventDefault();
-  });
-}
 
 // Main Content Page
 function loadMain() {
-  $('#content').html(companySnippet);
+  loadLogout();
 
-  // get the list of companies and populate the company selector
+  // See if profile setting questions have been answer
   apiCall({
     method: 'GET',
-    url: 'articles/companies/all/'
+    url: 'profile/meta/answered/'
   })
   .done(function (data) {
-    $.each(data, function (i, val) {
-      var option = "<option value=" + val.id + ">" + val.name + "</option>";
-      $('#company').append(option);
-    })
+      // redirect to proper page, based on whether the questions have been answered
+      data.answered ? loadContent() : loadQuestions();
   })
   .fail(function(xhr) {
     // 401 means token is expired
@@ -137,6 +105,12 @@ function loadMain() {
       loadLogin();
     }
   });
+}
+
+function loadContent() {
+  $('#content').html(productSnippet);
+
+  $('#product h1').html('<i class="fa fa-spinner fa-pulse fa-2x text-orange"></i>');
 
   // Make sure the url is amazon or zappos
   // If it is, initiate content scripts to extract relevant information
@@ -149,7 +123,8 @@ function loadMain() {
         if (url.indexOf('zappos.com')>=0) {
           getProduct('zappos');
         } else {
-          $('#product').html(wrongSiteHTML);
+          loadEmailSnippet('#product',wrongSiteHTML);
+          $('#scores').empty();
         }
       }
   });
@@ -158,7 +133,6 @@ function loadMain() {
   chrome.runtime.onMessage.addListener(
         function(request, sender, sendResponse) { 
           if (request.product) {
-            //$('#product').html('<p>You are looking at: ' + request.product + ' by ' + request.brand + '.<p>');
             apiCall({
               method: 'POST',
               url: 'articles/products/fetch/',
@@ -166,50 +140,83 @@ function loadMain() {
             })
             .done(function (data) {
               if(data.error) {
-                $('#product').html('<p>We couldn\'t find that product in our servers.  If you think this is a mistake, send us an <a href="MAILTO:info@axiologue.org">email</a> or considering <a href="http://data.axiologue.org">adding it</a>.<p>');
+                loadEmailSnippet('#product',productNotFoundSnippet);
+
+                $('#scores').empty();
+
+                // Add product name
+                $('#productName').html(request.product);
+
+                // Make sure links open in new tab
+                activateLinks();
+
               } else {
                 
-                $('#product').html('<p>product is: ' + data.name + '</p>'); 
-                //$('#product').html('<p>You are looking at: ' + data.name + '.<p>');
+                $('#product h1').html(data.product.company + ": " + data.product.name); 
+                
+                $('#companyScores').empty();
+
+                $('#personalized').html('<h3>Your Personal Ethical Score:</h3>');
+
+                var sum = 0;
+                $.each(data.company, function (i, val) {
+                  var li = '<li data-toggle="tooltip" data-placement="left" title="' + val.category + '">' +
+                    '<span class="category">' +
+                      '<span class="fa-stack">' +
+                        '<i class="fa fa-stack-2x fa-circle"></i>' +
+                        '<i class="fa fa-stack-1x fa-inverse fa-' + categoryIcons[val.category] + '"></i> ' +
+                      '</span>' +
+                 "</span><strong>" + scoreText(val.score) + '</strong> <span class="text-light text-small">(from ' + val.count + ' articles)</span></li>';
+
+                  $('#companyScores').append(li);
+
+                  sum += val.score;
+                });
+
+                $('#overall').html('<div id="overall-score"><h1 class="center">' + scoreText(sum) + '</h1></div>');
+
+                // Add link to scoring info
+                $('#linkDiv').html('<button id="scoreExplanation" class="btn btn-full btn-footer">Learn More about Scoring</btn>');
+                $('#scoreExplanation').on('click',loadExplanation);
+
+                // Make sure links open in new tab
+                activateLinks();
+                
+                $('li').tooltip();
               }
             })
             .fail(function (xhr) {
               console.log(xhr.JSONResponse);
             });
           } else {
-            $('#product').html('<p>Hmmm.  We weren\'t able to find a product on this page.</p>');
+            loadEmailSnippet('#product',noProductSnippet);
+            $('#scores').empty();
           }
   });
 
-  // enable logout function
-  $('#logout').click(logout);
+  function scoreText (score) {
+    var cls = "";
 
-
-  // add ability to get company-wide scores
-  $('#getCompanyForm').on('submit', function (e) {
-    var id = $('#company').val();
-
-    // Get personalized scores if an option was selected
-    if (id) {
-      apiCall({
-        method: 'GET',
-        url: 'profile/scores/company/' + id + '/'
-      })
-      .done(function (data) {
-        $('#companyScores').empty();
-
-        $.each(data, function (i, val) {
-          var li = "<li>" + val.category + ": " + val.score + "</li>";
-
-          $('#companyScores').append(li);
-          
-        });
-      });
+    if (score < 0) {
+      cls = "negative";
+    } else {
+      if (score > 0) {
+        cls = "positive";
+      } else {
+        cls = "neutral";
+      }
     }
 
-    // Stop form submission
-    e.preventDefault();
-  });
+    return '<span class="score ' + cls + '">' + score + '</span>';
+  };
+}
+
+function loadExplanation () {
+  $('#content').html(explanationText);
+
+  $('#backButton').on('click',loadContent);
+
+  activateLinks();
 }
 
 // API Call framework
@@ -217,8 +224,9 @@ function apiCall(args) {
   // Set AJAX parameters
   var params = {
     method: args.method || "GET",
+    contentType: 'application/json; charset=UTF-8',
     url: "http://api.axiologue.org/" + args.url,
-    data: args.data || {},
+    data: JSON.stringify(args.data) || {},
     headers: {
       'Access-Control-Allow-Credentials': 'true',
     },
@@ -232,26 +240,6 @@ function apiCall(args) {
   return $.ajax(params);
 }
 
-// Function to logout of of Axiologue API
-function logout () {
-  apiCall({
-    method: 'POST',
-    url: 'rest-auth/logout/'
-  })
-  .done(function () {
-    // Remove all login credentials
-    loggedIn = false;
-    token = ""
-    chrome.storage.local.remove('token');
-
-    // Reset to login page
-    $('#content').empty();
-    loadLogin();
-  })
-  .fail(function (xhr) {
-    console.log(xhr);
-  });
-}
 
 // Launch product scraping
 function getProduct (site) {
@@ -262,3 +250,24 @@ function getProduct (site) {
     chrome.tabs.executeScript(null, {file: 'js/zappos.js'});
   }
 }
+
+function loadEmailSnippet(div, snippet) {
+  // Load the Wrong site html
+  $(div).html(snippet);
+
+  // Add functional mailto link
+  $('.email').click(function(){
+      var hrefString = $(this).attr('href');
+      var myWindow = window.open(hrefString, "Opening mail client", "width=200, height=100");
+          myWindow.document.write("<p>Opening mail client.Please wait!!</p>");
+          setTimeout(function(){ myWindow.close() }, 2000);
+      });
+
+}
+
+function activateLinks() {
+  $('.link').on('click', function(){
+       chrome.tabs.create({url: $(this).attr('href')});
+       return false;
+     });
+}  
