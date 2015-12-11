@@ -47,12 +47,12 @@ var explanationText =
   '<hr>' +
   '<div id="Explanation">' +
     '<ul>' +
-      '<li>A <span class="positive"><strong>Positive</strong></span> score means in line with your ethics!</li>' +
-      '<li>A <span class="negative"><strong>Negative</strong></span> score means contrary to your ethics!</li>' +
-      '<li>A <span class="neutral"><strong>Zero</strong></span> score means no opinion!</li>' +
+      '<li>A <span class="positive"><strong>Positive</strong></span> score means the product is in line with your ethics!</li>' +
+      '<li>A <span class="negative"><strong>Negative</strong></span> score means the product is contrary to your ethics!</li>' +
+      '<li>A <span class="neutral"><strong>Zero</strong></span> score means no opinion! (It could also mean we need more data.)</li>' +
     '</ul>' +
-    '<p>Your score is determined by matching your ethics with the data we have on each product.  Your ethical profile  was set by answering a set of questions at sign up, but you can adjust your ethical profile at any point <a class="link" href="http://data.axiologue.org/#/ethicsProfile">here</a>.</p>' +
-    '<p>If you want to see our raw data, you can check that out <a class="link" href="http://data.axiologue.org/#/articles/tagged">here</a> or learn how to <a class="link" href="http://data.axiologue.org/#/text/tagging">contribute</a> to help make Axiologue better!</p>' +
+    '<p>Your score is determined by matching your ethics with the data we have on each product.  Your ethical profile was set by answering the set of simple questions we asked when you signed up.  Want to make tweaks or refine your ethics?  You can adjust your ethical profile at any point <a class="link" href="http://data.axiologue.org/#/ethicsProfile">here</a>.</p>' +
+    '<p>If you want to see our raw data, you can check that out <a class="link" href="http://data.axiologue.org/#/articles/tagged">here</a> or learn how to <a class="link" href="http://data.axiologue.org/#/text/tagging">contribute</a> to help make Axiologue better and more comprehensive!</p>' +
   '</div>' +
   '<hr >' +
   '<div>' +
@@ -160,13 +160,14 @@ function loadContent() {
 
                 var sum = 0;
                 $.each(data.company, function (i, val) {
+                  var plural = val.count != 1 ? 's' : '';
                   var li = '<li data-toggle="tooltip" data-placement="left" title="' + val.category + '">' +
                     '<span class="category">' +
                       '<span class="fa-stack">' +
                         '<i class="fa fa-stack-2x fa-circle"></i>' +
                         '<i class="fa fa-stack-1x fa-inverse fa-' + categoryIcons[val.category] + '"></i> ' +
                       '</span>' +
-                 "</span><strong>" + scoreText(val.score) + '</strong> <span class="text-light text-small">(from ' + val.count + ' articles)</span></li>';
+                 "</span><strong>" + scoreText(val.score) + '</strong> <span class="text-light text-small">(from ' + val.count + ' data point' + plural + ')</span></li>';
 
                   $('#companyScores').append(li);
 
