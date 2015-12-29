@@ -9,6 +9,11 @@ var questionSnippet =
     '<button id="startQuestions" class="btn btn-full btn-main">Get Started</button>' +
   '</div>';
 
+var thankYouSnippet = 
+  '<h1 class="center">Thank You For Signing Up!</h1>' +
+  '<hr>' +
+  '<div>Find a product on amazon.com or zappos.com to get your personalized score!  When you\'re on a product page, click on the extension button to see your score!</div>';
+
 // Question setting view
 function loadQuestions() {
   $('#content').html(questionSnippet);
@@ -104,7 +109,7 @@ function loadQuestions() {
           url: 'profile/question/answers/set/'
         })
         // if successful, load main content
-        .done(loadContent)
+        .done(loadThankYou)
         .fail(function (xhr) {
           $('#error').html = xhr.responseJSON
         });
@@ -124,4 +129,8 @@ function loadQuestions() {
     }
   }
 
+}
+
+function loadThankYou () {
+  $('#content').html(thankYouSnippet);
 }

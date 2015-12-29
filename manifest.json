@@ -3,7 +3,7 @@
 
     "name": "Mindful Click",
     "description": "Get personalize ethical rankings on athletic shoes!  Don't just buy a shoe that feels good; buy a shoe that does good.",
-    "version": "0.1.3",
+    "version": "0.1.4",
 
     "browser_action": {
         "default_popup": "popup.html",
