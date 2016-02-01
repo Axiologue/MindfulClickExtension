@@ -82,12 +82,29 @@ a:focus {
 
 /* FOOTER STYLING/POSITIONING */
 
+#header {
+  position: absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 50px;
+  background: #454d50;
+  display: block;
+}
+
+#header h1 {
+  color: #f05f40;
+  float: right;
+  padding: 12px 15px;
+  margin: 0;
+}
+
 #wrap {
   min-height: 100%;
 }
 
 #content {
-  padding: 150px 10px 65px 10px;
+  padding: 50px 10px 65px 10px;
   overflow: auto;
 }
 
@@ -321,62 +338,43 @@ button {
   width: 100%;
 }
 
-#overall,
-#subscores {
+.subScores {
   width: 50%;
   display: inline-block;
 }
 
 #overall {
   float: left;
-  height: 185px;
+  display: inline-block;
+  width: 100%;
+  height: auto;
+  text-align: center;
 }
 
-#subscores {
+#subscores-left {
+  float: left;
+}
+
+#subscores-right {
   float: right;
 }
 
-#overall-score {
-  display: block;
-  background-color: fff;
-  background-image: url('../img/burst_background.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  height: 185px;
-  width: 50%;
-  margin-top: 25px;
-  position: absolute;
-}
-
-#overall h1 {
-  color: #000;
-  font-size: 75px;
-  font-family: "impact";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: 0;
-  transform: translate(-50%,-50%);
-}
-
-#companyScores {
+.companyScores {
   list-style-type: none;
   padding: 0;
   margin: 0 0 15px 0;
 }
 
-#companyScores li {
+.companyScores li {
   line-height: 1.42857143;
   padding: 3px 12px;
   font-size: 16px;
-  white-space: nowrap;
   border: 1px solid transparent;
   border-radius: 4px;
   display: inline-block;
 }
 
-#companyScores li .score {
+.companyScores li .score {
   display: inline-block;
   width: 25px;
   text-align: right;
@@ -385,6 +383,15 @@ button {
 .category {
   color: #f05f40;
 }
+
+.large {
+  font-size: 30px
+}
+
+.subScores text {
+  font-size: 13px;
+}
+
 
 #linkDiv {
   display: inline-block;
@@ -397,40 +404,38 @@ button {
 
 .neutral {
   color: #7b2d20;
+  stroke: #7b2d20;
+  fill: #7b2d20;
 }
 
 .positive {
   color: #3c763d;
+  stroke: #3c763d;
+  fill: #3c763d;
 }
 
 .negative {
   color: #c12226;
+  stroke: #c12226;
+  fill: #c12226;
 }
+
+.range {
+  fill: #fff;
+}
+
+svg text {
+  font-family: 'impact';
+  stroke-width: 0;
+}
+
 
 #overall .positive {
   color: #3c763d;
-  /*
-  color: #dff0d8;
-
-  text-shadow:
-     -2px -2px 0 #3c763d,  
-      2px -2px 0 #3c763d,
-     -2px 2px 0 #3c763d,
-      2px 2px 0 #3c763d;
-      */
 }
 
 #overall .negative {
   color: #c12226;
-  /*
-  color: #e49f9f;
-
-  text-shadow:
-     -2px -2px 0 #c12226,  
-      2px -2px 0 #c12226,
-     -2px 2px 0 #c12226,
-      2px 2px 0 #c12226;
-      */
 }
 
 #overall .neutral {
@@ -523,6 +528,14 @@ button {
   margin-top: -5px;
   border-width: 5px 0 5px 5px;
   border-left-color: #000;
+}
+
+.tooltip.top .tooltip-arrow {
+  bottom: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px 5px 0;
+  border-top-color: #000;
 }
 
 /* PRODUCT EXPLANATION STYLING */

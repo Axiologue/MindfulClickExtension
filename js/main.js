@@ -3,13 +3,16 @@ var productSnippet =
   '<div id="product">' +
     '<h1 class="center"></h1>' +
   '</div>' +
-  '<hr >' +
   '<div id="personalized"></div>' +
   '<div id="scores">' +
     '<div id="overall">' +
     '</div>' +
-    '<div id="subscores">' +
-     '<ul id="companyScores">' +
+    '<div class="subScores left">' +
+     '<ul id="companyScores-left" class="companyScores">' +
+     '</ul>' +
+    '</div>' +
+    '<div class="subScores right">' +
+     '<ul id="companyScores-right" class="companyScores">' +
      '</ul>' +
     '</div>' +
   '</div>' +
@@ -154,27 +157,50 @@ function loadContent() {
                 
                 $('#product h1').html(data.product.company + ": " + data.product.name); 
                 
-                $('#companyScores').empty();
+                $('.companyScores').empty();
 
                 $('#personalized').html('<h3>Your Personal Ethical Score:</h3>');
 
-                var sum = 0;
+                var sum = 0, counted=0;
                 $.each(data.company, function (i, val) {
                   var plural = val.count != 1 ? 's' : '';
-                  var li = '<li data-toggle="tooltip" data-placement="left" title="' + val.category + '">' +
-                    '<span class="category">' +
+                  var li = '<li data-toggle="tooltip" data-placement="top" title="' + val.category + '">' +
+                    '<div class="category ' + (i%2==0 ? 'left' : 'right') + ' ">' +
                       '<span class="fa-stack">' +
                         '<i class="fa fa-stack-2x fa-circle"></i>' +
                         '<i class="fa fa-stack-1x fa-inverse fa-' + categoryIcons[val.category] + '"></i> ' +
-                      '</span>' +
-                 "</span><strong>" + scoreText(val.score) + '</strong> <span class="text-light text-small">(from ' + val.count + ' data point' + plural + ')</span></li>';
+                      '</div>' +
+                   '</span><svg id="' + val.category.replace(' ','-') + '"></svg>' + 
+                  //'<br />' +
+                  //'<span class="text-light text-small">(from ' + val.count + ' data point' + plural + ')</span>' +
+                  '</li>';
 
-                  $('#companyScores').append(li);
+                  i%2==0 ? $('#companyScores-left').append(li) : $('#companyScores-right').append(li);
 
-                  sum += val.score;
+                  scoreSlider({
+                    'svg': val.category.replace(' ','-'),
+                    'showRange': false,
+                    'score': val.score,
+                    'width': 180,
+                    'margin': 10,
+                    'showPointer': false
+                  });
+
+                  if (val.count > 0) {
+                    sum += val.score;
+                    counted++;
+                  }
                 });
 
-                $('#overall').html('<div id="overall-score"><h1 class="center">' + scoreText(sum) + '</h1></div>');
+                $('#overall').html('<svg id="overall-slider"></svg>');
+
+                scoreSlider({
+                  'svg': 'overall-slider',
+                  'showRange': true,
+                  'score': sum/counted
+                });
+
+                $('#overall').append('<h3>Individual Category Scores:</h3>');
 
                 // Add link to scoring info
                 $('#linkDiv').html('<button id="scoreExplanation" class="btn btn-full btn-footer">Learn More about Scoring</btn>');
@@ -196,20 +222,20 @@ function loadContent() {
   });
 
   function scoreText (score) {
-    var cls = "";
+    return '<span class="score ' + scoreClass(score) + '">' + (Math.round(score*10)/10).toFixed(1) + '</span>';
+  }
+}
 
-    if (score < 0) {
-      cls = "negative";
+function scoreClass (score) {
+  if (score < 0) {
+    return "negative";
+  } else {
+    if (score > 0) {
+      return "positive";
     } else {
-      if (score > 0) {
-        cls = "positive";
-      } else {
-        cls = "neutral";
-      }
+      return "neutral";
     }
-
-    return '<span class="score ' + cls + '">' + score + '</span>';
-  };
+  }
 }
 
 function loadExplanation () {
