@@ -1,0 +1,26 @@
+{
+  "name": "mindfulclick",
+  "description": "Get personalized ethical rankings on athletci shoes!  Don't just buy a shoe that feels good; buy a shoe that does good.",
+  "main": "gulpfile.js",
+  "authors": [
+    "Matt Broach"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Axiologue/MindfulClick",
+  "moduleType": [
+    "node"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "font-awesome": "^4.5.0",
+    "jquery": "^2.2.0",
+    "d3": "^3.5.14"
+  }
+}

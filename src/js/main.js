@@ -82,7 +82,7 @@ window.onload = function () {
     loggedIn ? loadMain() : loadLogin();
   }); 
   
-}
+};
 
 
 // Main Content Page
@@ -165,17 +165,17 @@ function loadContent() {
                 $.each(data.company, function (i, val) {
                   var plural = val.count != 1 ? 's' : '';
                   var li = '<li data-toggle="tooltip" data-placement="top" title="' + val.category + '">' +
-                    '<div class="category ' + (i%2==0 ? 'left' : 'right') + ' ">' +
+                    '<div class="category ' + (i%2===0 ? 'left' : 'right') + ' ">' +
                       '<span class="fa-stack">' +
                         '<i class="fa fa-stack-2x fa-circle"></i>' +
                         '<i class="fa fa-stack-1x fa-inverse fa-' + categoryIcons[val.category] + '"></i> ' +
                       '</div>' +
                    '</span><svg id="' + val.category.replace(' ','-') + '"></svg>' + 
-                  //'<br />' +
-                  //'<span class="text-light text-small">(from ' + val.count + ' data point' + plural + ')</span>' +
+                  '<br />' +
+                  '<div class="text-light text-small score-count">(from ' + val.count + ' data point' + plural + ')</div>' +
                   '</li>';
 
-                  i%2==0 ? $('#companyScores-left').append(li) : $('#companyScores-right').append(li);
+                  i%2===0 ? $('#companyScores-left').append(li) : $('#companyScores-right').append(li);
 
                   scoreSlider({
                     'svg': val.category.replace(' ','-'),
@@ -287,7 +287,7 @@ function loadEmailSnippet(div, snippet) {
       var hrefString = $(this).attr('href');
       var myWindow = window.open(hrefString, "Opening mail client", "width=200, height=100");
           myWindow.document.write("<p>Opening mail client.Please wait!!</p>");
-          setTimeout(function(){ myWindow.close() }, 2000);
+          setTimeout(function(){ myWindow.close(); }, 2000);
       });
 
 }

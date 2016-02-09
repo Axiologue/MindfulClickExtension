@@ -362,7 +362,7 @@ button {
 .companyScores {
   list-style-type: none;
   padding: 0;
-  margin: 0 0 15px 0;
+  margin: 0;
 }
 
 .companyScores li {
@@ -392,6 +392,19 @@ button {
   font-size: 13px;
 }
 
+.score-count {
+  display: block;
+  position: relative;
+  top: -8px;
+}
+
+.left .score-count {
+  left: 60px;
+}
+
+.right .score-count {
+  left: 30px;
+}
 
 #linkDiv {
   display: inline-block;
@@ -550,4 +563,18 @@ svg text {
 
 #Explanation li {
   margin-bottom: 10px;
+}
+
+/* Auth extra styling */
+
+#forgot {
+  text-decoration: none;
+}
+
+#forgot:hover {
+  text-decoration: underline;
+}
+
+#passResetForm {
+  margin-bottom: 140px;
 }

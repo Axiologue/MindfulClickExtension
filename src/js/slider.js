@@ -94,7 +94,7 @@ function scoreSlider(options) {
         .attr('y',0)
         .attr('height',height)
         .attr('width',height)
-        .attr('xlink:href','../img/flower.png')
+        .attr('xlink:href','../img/flower.png');
       score.append('text')
         .attr('x',0)
         .attr('y',height/2)
@@ -133,6 +133,6 @@ function scoreSlider(options) {
       .select('text')
       .tween('text', function (d) {
           var i = d3.interpolate(this.textContent, settings.score);
-          return function (t) { this.textContent = (+i(t)).toFixed(1) }
+          return function (t) { this.textContent = (+i(t)).toFixed(1); };
       });
 }

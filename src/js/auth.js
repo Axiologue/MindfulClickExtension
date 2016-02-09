@@ -13,6 +13,7 @@ var loginSnippet =
     '<input type="password" name="password" id="password" placeholder="Password">' +
     '<button class="btn btn-full btn-main" name="Submit" value="Submit" type="submit">Login</button>' +
   '</form>' +
+  '<a id="forgot" href="#">Forgot Password?</a>' +
   '<hr>' +
   '<button class="btn btn-full btn-main" id="signUp">Sign Up</button>';
 
@@ -40,6 +41,23 @@ var signUpSnippet =
     '<button class="btn btn-full btn-main" type="submit" value="Submit" name="Submit">Sign Up</button>' +
   '</form>';
 
+var forgotPassSnippet =
+  '<h2 class="center">Forgot Your Password?</h2>' + 
+  '<p>Please enter your email below, and we\'ll send you a password reset email</p>' +
+  '<div id="errorMessage" class="error">' +
+  '</div>' +
+  '<form id="passResetForm">' +
+    '<label for="email" class="sr-only">Email:</label>' +
+    '<input id="email" name="email" type="text" placeholder="Email">' +
+    '<button class="btn btn-full btn-main" type="submit" value="Submit" name="Submit">Submit</button>' +
+  '</form>' + 
+  '<hr>' +
+  '<button class="btn btn-full btn-main" id="back">Go Back</button>';
+
+var emailSentSnippet = 
+  '<h2 class="center">Email Sent!</h2>' +
+  '<p>A Password Reset email has been sent to you.  Please check your email for the next step!</p>';
+
 // Switch to Signup Page
 function loadSignup() {
   // Load Signup HTML
@@ -48,7 +66,7 @@ function loadSignup() {
   // Handle form submissions
   $('#signUpForm').on('submit',function(e) {
     $('.error').empty();
-    errorMsg = ''
+    errorMsg = '';
 
     // Get data from form
     var data = {
@@ -167,6 +185,7 @@ function loadLogin() {
 
   // Add button click to signUp button
   $('#signUp').on('click',loadSignup);
+  $('#forgot').on('click',loadForgot);
 }
 
 // Function to logout of of Axiologue API
@@ -178,7 +197,7 @@ function logout () {
   .done(function () {
     // Remove all login credentials
     loggedIn = false;
-    token = ""
+    token = "";
     chrome.storage.local.remove('token');
 
     // Remove logout button
@@ -199,4 +218,55 @@ function loadLogout() {
 
   // enable logout function
   $('#logout').click(logout);
+}
+
+function loadForgot() {
+  $('#content').html(forgotPassSnippet);
+
+  $('#passResetForm').on('submit', function (e) {
+    // Clear any error messages
+    $(".error").empty();
+
+    var email = $('input[name="email"]').val();
+
+    if (!email) {
+      
+      errorMsg = "<h3>Please Enter A Valid Email Address</h3>";
+      // Load existing error message
+      $('#errorMessage').append(errorMsg);
+      
+    } else {
+      apiCall({
+        method: 'POST',
+        url: 'rest-auth/password/reset/',
+        data: {
+          email: email,
+        }
+      })
+      .done(function (data, textStatus, xhr) {
+          loadEmailSent();
+      })
+      .fail(function (xhr, textStatus, error) {
+        // Add new error message
+        if (xhr.responseJSON.non_field_errors) {
+          for (var i = 0; i < xhr.responseJSON.non_field_errors.length; i++) {
+            errorMsg = "<h3>" + xhr.responseJSON.non_field_errors[i] + " </h3>";
+            $("#errorMessage").append(errorMsg);
+          }
+        }
+        if (xhr.responseJSON.email) {
+          errorMsg = "<h3>" + xhr.responseJSON.email + "</h3>";
+          $("#errorMessage").append(errorMsg);
+        } 
+      });
+    }
+
+    e.preventDefault();
+  });
+
+  $('#back').on('click',loadLogin);
+}
+
+function loadEmailSent () {
+  $('#content').html(emailSentSnippet);
 }

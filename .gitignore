@@ -11,3 +11,13 @@ Thumbs.db
 # vim files #
 # #############
 *.swp
+
+# Build files #
+###############
+node_modules/
+bower_components/
+
+# built version #
+#################
+_output/
+_output.zip

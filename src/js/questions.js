@@ -64,7 +64,7 @@ function loadQuestions() {
 
     questionHTML += '<div class="answerButtons">';
 
-    if(currentAnswer != 0) {
+    if(currentAnswer !== 0) {
       questionHTML += '<button id="previous" class="btn btn-half btn-main left"><i class="fa fa-arrow-left"></i> Previous question</button>';
     }
 
@@ -100,7 +100,7 @@ function loadQuestions() {
       if (checkAnswer()) {
         answers[currentAnswer] = +$("input:radio[name=answers]:checked").val(); 
 
-        data = {'answers': answers}
+        data = {'answers': answers};
 
         // send selected answers to server
         apiCall({
@@ -111,7 +111,7 @@ function loadQuestions() {
         // if successful, load main content
         .done(loadThankYou)
         .fail(function (xhr) {
-          $('#error').html = xhr.responseJSON
+          $('#error').html = xhr.responseJSON;
         });
       }
     });
