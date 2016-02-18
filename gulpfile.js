@@ -88,11 +88,21 @@ pipes.buildExtension = function () {
 gulp.task('build', pipes.buildExtension);
 
 gulp.task('clean', function () {
-  var deferred = Q.defer();
-  del(paths.output, function () {
-    deferred.resolve();
-  });
-  return deferred.promise;
+  return del(paths.output);
 });
 
-gulp.task('clean-build',['clean','build']);
+gulp.task('clean-build',['clean'],pipes.buildExtension);
+
+gulp.task('watch', ['clean-build'], function () {
+  gulp.watch(paths.index, function() {
+    return pipes.buildIndex();
+  });
+
+  gulp.watch(paths.scripts, function () {
+    return pipes.collectAppScripts();
+  });
+
+  gulp.watch(paths.json, function () {
+    return pipes.collectJSON();
+  })
+});

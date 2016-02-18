@@ -162,7 +162,7 @@ function loadContent() {
                 $('#personalized').html('<h3>Your Personal Ethical Score:</h3>');
 
                 var sum = 0, counted=0;
-                $.each(data.company, function (i, val) {
+                $.each(data.company.categories, function (i, val) {
                   var plural = val.count != 1 ? 's' : '';
                   var li = '<li data-toggle="tooltip" data-placement="top" title="' + val.category + '">' +
                     '<div class="category ' + (i%2===0 ? 'left' : 'right') + ' ">' +
@@ -186,10 +186,6 @@ function loadContent() {
                     'showPointer': false
                   });
 
-                  if (val.count > 0) {
-                    sum += val.score;
-                    counted++;
-                  }
                 });
 
                 $('#overall').html('<svg id="overall-slider"></svg>');
@@ -197,7 +193,7 @@ function loadContent() {
                 scoreSlider({
                   'svg': 'overall-slider',
                   'showRange': true,
-                  'score': sum/counted
+                  'score': data.company.overall
                 });
 
                 $('#overall').append('<h3>Individual Category Scores:</h3>');
@@ -252,7 +248,7 @@ function apiCall(args) {
   var params = {
     method: args.method || "GET",
     contentType: 'application/json; charset=UTF-8',
-    url: "http://api.axiologue.org/" + args.url,
+    url: "https://api.axiologue.org/" + args.url,
     data: JSON.stringify(args.data) || {},
     headers: {
       'Access-Control-Allow-Credentials': 'true',
