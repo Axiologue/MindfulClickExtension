@@ -137,8 +137,8 @@ function loadContent() {
         function(request, sender, sendResponse) { 
           if (request.product) {
             apiCall({
-              method: 'POST',
-              url: 'articles/products/fetch/',
+              method: 'GET',
+              url: 'profile/scores/product/?use_generics=false&name=' + request.product.replace(' ', '%20'),
               data: request
             })
             .done(function (data) {
@@ -155,14 +155,14 @@ function loadContent() {
 
               } else {
                 
-                $('#product h1').html(data.product.company + ": " + data.product.name); 
+                $('#product h1').html(data.Product.company + ": " + data.Product.name); 
                 
                 $('.companyScores').empty();
 
                 $('#personalized').html('<h3>Your Personal Ethical Score:</h3>');
 
                 var sum = 0, counted=0;
-                $.each(data.company.categories, function (i, val) {
+                $.each(data.scores[0].categories, function (i, val) {
                   var plural = val.count != 1 ? 's' : '';
                   var li = '<li data-toggle="tooltip" data-placement="top" title="' + val.category + '">' +
                     '<div class="category ' + (i%2===0 ? 'left' : 'right') + ' ">' +
@@ -193,7 +193,7 @@ function loadContent() {
                 scoreSlider({
                   'svg': 'overall-slider',
                   'showRange': true,
-                  'score': data.company.overall
+                  'score': data.scores[0].overall
                 });
 
                 $('#overall').append('<h3>Individual Category Scores:</h3>');
